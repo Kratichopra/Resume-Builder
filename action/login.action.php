@@ -1,0 +1,32 @@
+<?php
+
+require '..\assets\class\database.class.php';
+require '..\assets\class\function.class.php';
+if($_POST){
+    $post=$_POST;
+    if($post['email_id'] && $post['password']){
+
+       
+        $email_id=$db->real_escape_string($post['email_id']);
+        $password=md5($db->real_escape_string($post['password']));
+        $result =$db->query("select id,full_name from users where (email_id='$email_id'&& password ='$password')");
+        $result = $result->fetch_assoc();
+        if($result){
+            $fn ->setAuth($result);
+            $fn ->setAlert('Logged in !');
+            $fn->redirect('../myresumes.php');
+        }else{
+            $fn ->setError('Incorrect emailid or password');
+            $fn->redirect('../login.php');
+        }
+        
+        
+    }else{
+        
+        $fn ->setError('Please fill the form !');
+        $fn->redirect('../login.php');
+    }
+}
+else{
+    $fn->redirect('../login.php');
+}
